@@ -13,7 +13,7 @@ function PeopleCard({ person }) {
               throw new Error(`Response status: ${resfilm.status}`);
             }
             const result = await resfilm.json();
-            return result.title;
+            return result;
           } catch (error) {
             console.error(error.message);
             return "Unknown Title";
@@ -25,17 +25,20 @@ function PeopleCard({ person }) {
     }
 
     getFilmTitles();
-  }, [person.films]);
-
+  }, []);
+  const firstFilmImage = filmTitles[0]?.movie_banner || filmTitles[0]?.image;
   return (
-    <div className="card">
-      <h2>{person.name}</h2>
-      <p>{person.gender}</p>
-      <ul>
-        {filmTitles.map((title) => (
-          <li key={title}>{title}</li>
-        ))}
-      </ul>
+    <div className="bg-white shadow-md rounded-xl overflow-hidden transition-transform duration-300 hover:scale-105">
+      <img src={firstFilmImage} className="w-full h-48 object-cover"></img>
+      <div className="p-4" key={person.id}>
+        <h2 className="text-lg font-bold mb-2">{person.name}</h2>
+          {filmTitles.map((film) => (
+          <div>
+            <p className="text-sm text-gray-500">{film.title}</p>
+            <p className="text-sm text-gray-600">({film.release_date}) – {film.director}</p>
+          </div>
+          ))}
+      </div>
     </div>
   );
 }
