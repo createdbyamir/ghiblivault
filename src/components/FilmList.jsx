@@ -3,6 +3,7 @@ import FilmCard from "./FilmCard";
 
 function FilmList({ limit }) {
   const [film, setFilm] = useState([]);
+  const [visibleCount, setVisibleCount] = useState(limit);
   const url = "https://ghibliapi.vercel.app/films";
 
   useEffect(() => {
@@ -18,23 +19,34 @@ function FilmList({ limit }) {
     }
     getFilms()
   }, []);
-    const visibleFilms = film.slice(0, limit);
+    const totalCount = film.length;
+    const showToggle = totalCount > limit;
+    const visibleFilms = film.slice(0, visibleCount);
+
     return (
       <>
-      <div className="mb-8 text-center">
-        <h2 className="text-3xl font-bold text-gray-800 mb-2">Films</h2>
-        <a
-          href="#"
-          className="inline-block text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200"
-        >
-          The stories that shaped generations →
-        </a>
-      </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-20">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {visibleFilms.map(film => (
             <FilmCard key={film.id} film={film} />
           ))}
         </div>
+
+        {showToggle &&
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => {
+                if (visibleCount >= totalCount) {
+                  setVisibleCount(limit);
+                } else {
+                  setVisibleCount(visibleCount + limit);
+                }
+              }}
+              className="text-blue-600 hover:text-blue-800 font-medium mt-10 mb-20"
+            >
+              {visibleCount >= totalCount ? 'Show less' : `Show more`}
+            </button>
+          </div>
+        }
       </>
 
     );
